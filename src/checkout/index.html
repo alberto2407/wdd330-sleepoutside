@@ -17,16 +17,16 @@
       <section class="checkout-form">
         <form name="checkout">
           <fieldset>
-            <legend></legend>
+            <legend>Shipping</legend>
             <div class="checkout__name">
               <label for="fname">First Name</label>
-              <input type="text" name="fname" id="fname" required />
+              <input name="fname" id="fname" required />
               <label for="lname">Last Name</label>
               <input type="text" name="lname" id="lname" required />
             </div>
             <div class="checkout__address">
-              <label for="address">Address</label>
-              <input type="text" name="address" id="address" required />
+              <label for="street">Street</label>
+              <input type="text" name="street" id="street" required />
               <label for="city">City</label>
               <input type="text" name="city" id="city" required />
               <label for="state">State</label>
@@ -42,27 +42,34 @@
               <input type="text" name="cardNumber" id="cardNumber" required />
               <label for="exp">Expiration</label>
               <input type="text" name="exp" id="exp" required />
-              <label for="cvv">CVV</label>
-              <input type="text" name="cvv" id="cvv" required />
+              <label for="code">Security Code</label>
+              <input type="text" name="code" id="code" required />
             </div>
           </fieldset>
           <fieldset class="checkout-summary">
             <legend>Order Summary</legend>
-
-            <div class="order__summary">
-              <div>Items</div>
-              <div id="numberItems"></div>
-              <div>Subtotal</div>
-              <div id="cartTotal"></div>
-              <div>Shipping</div>
-              <div>Tax</div>
-              <div id="tax"></div>
-              <div id="shipping"></div>
-              <div>Total</div>
-              <div id="total"></div>
-            </div>
+              <ul>
+                <li>
+                  <label for="cartTotal"
+                    >Item Subtotal(<span id="num-items"></span>)</label
+                  >
+                  <p name="cartTotal" id="cartTotal"></p>
+                </li>
+                <li>
+                  <label for="shipping">Shipping Estimate</label>
+                  <p id="shipping"></p>
+                </li>
+                <li>
+                  <label for="tax">Tax</label>
+                  <p id="tax"></p>
+                </li>
+                <li>
+                  <label for="orderTotal"><b>Order Total</b></label>
+                  <p id="orderTotal"></p>
+                </li>
+              </ul>
           </fieldset>
-          <button type="submit" id="checkoutSubmit">Checkout</button>
+          <button id="checkoutSubmit" type="submit">Checkout</button>
         </form>
       </section>
     </main>
