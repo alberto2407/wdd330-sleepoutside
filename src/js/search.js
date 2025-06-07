@@ -1,115 +1,98 @@
-import { loadHeaderFooter, getParam, renderListWithTemplate } from "./utils.mjs";
-import ExternalServices from "./ExternalServices.mjs";
-
-// Inicializar header y footer
-loadHeaderFooter();
-
-// Función para crear template de productos
-function productCardTemplate(product) {
-  return `
-    <li class="product-card">
-      <a href="../product_pages/?product=${product.Id}">
-        <img src="${product.Images.PrimaryMedium}" alt="${product.Name}">
-        <h3>${product.Brand.Name}</h3>
-        <p>${product.NameWithoutBrand}</p>
-        <p class="product-card__price">$${product.FinalPrice}</p>
-      </a>
-    </li>
-  `;
-}
-
-// Esperar a que se cargue el DOM y el header
-setTimeout(() => {
-  initializeSearch();
-}, 200);
-
-function initializeSearch() {
-  // Configurar el formulario de búsqueda
-  setupSearchForm();
-  
-  // Obtener el término de búsqueda de la URL
-  const searchQuery = getParam('q');
-  
-  if (searchQuery) {
-    searchProducts(searchQuery);
-  } else {
-    showNoSearch();
+export class ProductSearch {
+  constructor() {
+    this.allProducts = [];
+    this.searchInput = document.getElementById('product-search');
+    this.searchResults = document.getElementById('search-results');
+    this.init();
   }
-}
 
-function setupSearchForm() {
-  const searchForm = document.getElementById('search-form');
-  
-  if (searchForm) {
-    searchForm.addEventListener('submit', handleSearch);
+  async init() {
+    await this.loadAllProducts();
+    this.setupEventListeners();
   }
-}
 
-function handleSearch(event) {
-  event.preventDefault();
-  
-  const searchInput = document.getElementById('search-input');
-  const query = searchInput.value.trim();
-  
-  if (query) {
-    // Redirigir a la página de resultados de búsqueda
-    window.location.href = `?q=${encodeURIComponent(query)}`;
-  }
-}
-
-async function searchProducts(query) {
-  try {
-    // Mostrar loading
-    document.getElementById('search-info').innerHTML = '<p>Buscando productos...</p>';
-    
-    const dataSource = new ExternalServices();
-    const results = await dataSource.searchProducts(query);
-    
-    // Actualizar título y información
-    document.getElementById('search-title').textContent = `Resultados para "${query}"`;
-    document.getElementById('search-info').innerHTML = `
-      <p>Se encontraron <strong>${results.length}</strong> productos para tu búsqueda.</p>
-    `;
-    
-    if (results.length > 0) {
-      // Mostrar resultados
-      const productList = document.getElementById('product-list');
-      renderListWithTemplate(productCardTemplate, productList, results, "afterbegin", true);
-    } else {
-      showNoResults(query);
+  async loadAllProducts() {
+    try {
+      console.log('Loading products...');
+      const categories = ['tents', 'backpacks', 'sleeping-bags'];
+      const results = [];
+      
+      for (const category of categories) {
+        const response = await fetch(`/public/json/${category}.json`);
+        const data = await response.json();
+        console.log(`${category} products found:`, data.Result?.length || 0);
+        
+        // Los productos están en data.Result
+        if (data.Result && Array.isArray(data.Result)) {
+          results.push(...data.Result);
+        }
+      }
+      
+      this.allProducts = results;
+      console.log('Total products loaded:', this.allProducts.length);
+    } catch (error) {
+      console.error('Error loading products:', error);
     }
-    
-  } catch (error) {
-    console.error('Error en la búsqueda:', error);
-    showError();
   }
-}
 
-function showNoResults(query) {
-  document.getElementById('product-list').innerHTML = `
-    <div class="no-results">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-      </svg>
-      <h2>No se encontraron productos</h2>
-      <p>No encontramos productos que coincidan con "${query}"</p>
-      <p>Intenta con otros términos de búsqueda.</p>
-    </div>
-  `;
-}
+  setupEventListeners() {
+    let searchTimeout;
+    
+    this.searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        this.performSearch(e.target.value);
+      }, 300);
+    });
 
-function showNoSearch() {
-  document.getElementById('search-title').textContent = 'Búsqueda';
-  document.getElementById('search-info').innerHTML = `
-    <p>Usa el formulario de búsqueda para encontrar productos.</p>
-  `;
-}
+    document.addEventListener('click', (e) => {
+      if (!this.searchInput.contains(e.target) && !this.searchResults.contains(e.target)) {
+        this.hideResults();
+      }
+    });
+  }
 
-function showError() {
-  document.getElementById('product-list').innerHTML = `
-    <div class="no-results">
-      <h2>Error en la búsqueda</h2>
-      <p>Hubo un problema al buscar productos. Intenta de nuevo.</p>
-    </div>
-  `;
+  performSearch(query) {
+    console.log('Searching for:', query);
+    console.log('Total products:', this.allProducts.length);
+    
+    if (query.length < 2) {
+      this.hideResults();
+      return;
+    }
+
+    const filtered = this.allProducts.filter(product => 
+      product.Name.toLowerCase().includes(query.toLowerCase()) ||
+      product.Brand.Name.toLowerCase().includes(query.toLowerCase())
+    ).slice(0, 5);
+
+    console.log('Filtered results:', filtered.length);
+    this.displayResults(filtered);
+  }
+
+  displayResults(products) {
+    if (products.length === 0) {
+      this.searchResults.innerHTML = '<div class="no-results">No products found</div>';
+    } else {
+      this.searchResults.innerHTML = products.map(product => `
+        <a href="/product_pages/?product=${product.Id}" class="search-result-item">
+          <img src="${product.Images.PrimarySmall}" alt="${product.Name}">
+          <div>
+            <strong>${product.Brand.Name}</strong>
+            <p>${product.NameWithoutBrand}</p>
+            <span class="price">$${product.FinalPrice}</span>
+          </div>
+        </a>
+      `).join('');
+    }
+    this.showResults();
+  }
+
+  showResults() {
+    this.searchResults.classList.remove('hidden');
+  }
+
+  hideResults() {
+    this.searchResults.classList.add('hidden');
+  }
 }

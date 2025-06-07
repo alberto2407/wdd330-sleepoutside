@@ -49,3 +49,10 @@ function updateCartCount() {
     setTimeout(updateCartCount, 200);
   }
 }
+// main.js - Solo agregar esta línea al final de tu archivo existente
+import { ProductSearch } from './search.js';
+
+// Inicializar el buscador cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  new ProductSearch();
+});
