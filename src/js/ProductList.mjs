@@ -20,9 +20,15 @@ export default class ProductList {
     this.listElement = listElement;
   }
 
+  // async init() {
+  //   const products = await this.dataSource.getData();
+  //   this.renderList(products);
+  // }
+
   async init() {
-    const products = await this.dataSource.getData();
-    this.renderList(products);
+    const list = await this.dataSource.getData();
+    const filteredList = list.filter(p => p.DetailPage);
+    this.renderList(filteredList);
   }
 
   renderList(list) {
