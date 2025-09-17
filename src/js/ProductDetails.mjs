@@ -33,11 +33,27 @@ export default class ProductDetails {
     productSection.querySelector("h2").textContent = this.product.Name || "";
     
     const img = productSection.querySelector("img");
+    const discount = 100 - Math.floor((this.product.FinalPrice / this.product.SuggestedRetailPrice) * 100)
     img.src = this.product.Image || "";
     img.alt = this.product.Name || "Imagem do produto";
-
+   
     productSection.querySelector(".product-card__price").textContent = this.product.FinalPrice ? `$${this.product.FinalPrice}` : "";
     productSection.querySelector(".product__color").textContent = this.product.Colors[0].ColorName || "";
     productSection.querySelector(".product__description").innerHTML = this.product.DescriptionHtmlSimple || "";
+  
+    //adding the discount flag here
+    let discountFlag = productSection.querySelector(".discount-flag");
+    if (!discountFlag){
+      discountFlag = document.createElement("span");
+      discountFlag.classList.add("discount-flag");
+      productSection.querySelector(".product-card__price").prepend(discountFlag);
+    }
+    if (discount > 0){
+      discountFlag.textContent = `${discount}% off`;
+      discountFlag.style.display = "inline-block";
+    } else {
+      discountFlag.textContent = "";
+      discountFlag.style.display = "none";
+    }
   }
 }
