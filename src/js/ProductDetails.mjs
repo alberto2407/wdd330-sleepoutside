@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, animateCartIcon, updateCartBadge } from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -35,6 +35,11 @@ export default class ProductDetails {
       cartItems.push(this.product);
     }
     setLocalStorage("so-cart", cartItems);
+    // animate the cart/backpack icon to give feedback to the user
+    // run a short animation after updating localStorage
+    animateCartIcon();
+    // update the numeric badge showing number of items
+    updateCartBadge();
   }
 
   renderProductDetails() {

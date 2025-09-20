@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage, priceTotal } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, priceTotal, updateCartBadge } from "./utils.mjs";
 function deleteCartContent(event) {
   const itemId = event.target.getAttribute("data-id");
   let cartItems = getLocalStorage("so-cart");
@@ -12,6 +12,8 @@ function deleteCartContent(event) {
 
   setLocalStorage("so-cart", cartItems);
   renderCartContents();
+  // update the cart badge after removing an item
+  updateCartBadge();
 }
 
 function renderCartContents() {
@@ -64,3 +66,5 @@ function cartItemTemplate(item) {
 }
 
 renderCartContents();
+// ensure badge reflects current cart on cart page load
+updateCartBadge();
