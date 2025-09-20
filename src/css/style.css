@@ -286,3 +286,34 @@ footer {
   font-size: var(--small-font);
   padding: 1em;
 }
+
+.categories {
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  list-style: none;
+}
+
+.category-list li {
+  text-align: center;
+  max-width: 150px; 
+}
+
+.category-list img {
+  max-width: 120px; 
+  height: auto;
+  display: block;
+  margin: 0 auto 0.5rem auto;
+}
+
+.category-list span {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
