@@ -160,7 +160,11 @@ button {
   display: flex;
   flex-flow: row wrap;
   list-style-type: none;
-  justify-content: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: stretch;
+  align-items: stretch;
 }
 
 .product-list a {
@@ -241,6 +245,20 @@ button {
   grid-column: 3;
 }
 
+.cart-card__delete {
+  grid-row: 1;
+  grid-column: 4;
+  color: crimson;
+
+  &:hover {
+    cursor: pointer;
+    color: red;
+    text-decoration: underline;
+    font-weight: bold;
+    transform: scale(1.1);
+  }
+}
+
 @media screen and (min-width: 500px) {
   body {
     max-width: 1080px;
@@ -253,7 +271,8 @@ button {
 
   .cart-card {
     font-size: inherit;
-    grid-template-columns: 150px auto 15%;
+    /* Ajustamos las columnas para pantallas más grandes */
+    grid-template-columns: 120px 1fr 100px 80px 40px 120px;
   }
 }
 
