@@ -160,8 +160,8 @@ button {
   display: flex;
   flex-flow: row wrap;
   list-style-type: none;
-  justify-content: space-evenly;
-  flex-direction: column;
+  justify-content: flex-end;
+  flex-direction: row;
   flex-wrap: wrap;
   align-content: stretch;
   align-items: stretch;
@@ -257,6 +257,12 @@ button {
     font-weight: bold;
     transform: scale(1.1);
   }
+}
+
+.cart-footer .cart-total {
+  font-size: 1.2em;
+  text-align: right;
+  margin: 1em 0;
 }
 
 @media screen and (min-width: 500px) {
