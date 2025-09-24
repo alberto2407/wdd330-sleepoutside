@@ -1,4 +1,10 @@
-import { getLocalStorage, setLocalStorage, priceTotal, updateCartBadge } from "./utils.mjs";
+import {
+  getLocalStorage,
+  setLocalStorage,
+  priceTotal,
+  updateCartBadge,
+} from "./utils.mjs";
+
 function deleteCartContent(event) {
   const itemId = event.target.getAttribute("data-id");
   let cartItems = getLocalStorage("so-cart");
@@ -12,8 +18,24 @@ function deleteCartContent(event) {
 
   setLocalStorage("so-cart", cartItems);
   renderCartContents();
-  // update the cart badge after removing an item
   updateCartBadge();
+}
+
+function changeQuantity(productId, delta) {
+  let cartItems = getLocalStorage("so-cart") || [];
+  const index = cartItems.findIndex((item) => item.Id === productId);
+
+  if (index !== -1) {
+    cartItems[index].quantity = (cartItems[index].quantity || 1) + delta;
+
+    if (cartItems[index].quantity <= 0) {
+      cartItems = cartItems.filter((item) => item.Id !== productId);
+    }
+
+    setLocalStorage("so-cart", cartItems);
+    renderCartContents();
+    updateCartBadge();
+  }
 }
 
 function renderCartContents() {
@@ -29,9 +51,28 @@ function renderCartContents() {
     document.querySelector(".cart-total__amount").textContent =
       `$${total.toFixed(2)}`;
     cartFooter.classList.remove("hide");
+
+    // botão de deletar
     document.querySelectorAll(".cart-card__delete").forEach((button) => {
       button.addEventListener("click", deleteCartContent);
     });
+
+    // botões de quantidade
+    document.querySelectorAll(".qty-btn.decrease").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const id = e.target.dataset.id;
+        changeQuantity(id, -1);
+      });
+    });
+
+    document.querySelectorAll(".qty-btn.increase").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const id = e.target.dataset.id;
+        changeQuantity(id, 1);
+      });
+    });
+
+    // botão de checkout
     document
       .querySelector("button.checkout")
       .addEventListener("click", () =>
@@ -56,7 +97,11 @@ function cartItemTemplate(item) {
     <h2 class="card__name">${item.Name}</h2>
   </a>
   <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <p class="cart-card__quantity">qty: ${item.quantity}</p>
+  <p class="cart-card__quantity">
+    <button class="qty-btn decrease" data-id="${item.Id}">−</button>
+    <span class="qty">${item.quantity || 1}</span>
+    <button class="qty-btn increase" data-id="${item.Id}">+</button>
+  </p>
   <p class="cart-card__price">$${item.FinalPrice}</p>
   <span class="cart-card__delete" data-id=${item.Id}>X</span>
   <p class="cart-card__subtotal">Subtotal: $${subtotal}</p>
@@ -66,5 +111,4 @@ function cartItemTemplate(item) {
 }
 
 renderCartContents();
-// ensure badge reflects current cart on cart page load
 updateCartBadge();
