@@ -3,7 +3,10 @@ import {
   setLocalStorage,
   priceTotal,
   updateCartBadge,
+  loadHeaderFooter,
 } from "./utils.mjs";
+
+loadHeaderFooter();
 
 function deleteCartContent(event) {
   const itemId = event.target.getAttribute("data-id");
