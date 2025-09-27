@@ -253,6 +253,52 @@ button {
   width: 100%;
 }
 
+/* Color selection styles */
+.product__colors {
+  margin: 1rem 0;
+}
+
+.product__colors label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.color-options {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.color-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #ddd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.color-swatch:hover {
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.color-swatch.selected {
+  border-color: var(--secondary-color);
+  border-width: 2px;
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.selected-color {
+  font-size: 0.9rem;
+  color: var(--dark-grey);
+  font-style: italic;
+}
+
+/* End color selection styles */
+
 /* Start cart list card styles */
 .cart-card {
   display: grid;
