@@ -1,60 +1,99 @@
-import { getLocalStorage, setLocalStorage, animateCartIcon, updateCartBadge } from "./utils.mjs";
+import { getLocalStorage ,setLocalStorage, animateCartIcon, updateCartBadge } from "./utils.mjs";
+//import showAlert from "./customAlert";
+
+function productDetailsTemplate(product, colorIndex = 0) {
+    return `<section class="product-detail"> <h3>${product.Brand.Name}</h3>
+        <h2 class="divider">${product.NameWithoutBrand}</h2>
+        <img
+            class="divider"
+            src="${product.Colors[colorIndex].ColorPreviewImageSrc}"
+            alt="${product.NameWithoutBrand}"
+        />
+        <p class="product-card__price">$${product.FinalPrice}</p>
+        <p class="product__color">${product.Colors[colorIndex].ColorName}</p>
+        <div class="product__color-list">
+            ${product.Colors.map((color, index) => `
+                <img 
+                    class="color-option"
+                    data-index="${index}" 
+                    src="${color.ColorChipImageSrc}"
+                    alt="${color.ColorName}" />
+                `).join("")}
+        </div>
+        <p class="product__description">
+        ${product.DescriptionHtmlSimple}
+        </p>
+        <div class="product-detail__add">
+            <button id="addToCart" data-id="${product.Id}">Add to Cart</button>
+        </div></section>`;
+}
+
 
 export default class ProductDetails {
-  constructor(productId, dataSource) {
-    this.productId = productId;
-    this.dataSource = dataSource;
-    this.product = {};
-  }
-
-  async init() {
-    this.product = await this.dataSource.findProductById(this.productId);
-
-    this.renderProductDetails();
-
-    const addBtn = document.getElementById("addToCart");
-    if (addBtn) {
-      addBtn.addEventListener("click", this.addProductToCart.bind(this));
-      addBtn.dataset.id = this.product.Id;
+    constructor(productId, dataSource) {
+        this.productId = productId;
+        this.product = {};
+        this.dataSource = dataSource;
+        this.colorIndex = 0;
     }
-  }
+    async init() {
+        this.product = await this.dataSource.findProductById(this.productId);
+        this.renderProductDetails("main");
+        document
+            .getElementById("addToCart")
+            .addEventListener("click", this.addToCart.bind(this));
 
-  addProductToCart() {
-    const cartItems = getLocalStorage("so-cart") || [];
-    // Ver si el artículo ya está en el carrito
-    const existingItemIndex = cartItems.findIndex(
-      (item) => item.Id === this.product.Id
-    );
+        document.addEventListener("click", (event) => {
+            if (event.target.classList.contains("color-option")) {
+                this.colorIndex = parseInt(event.target.dataset.index, 10);
+                setLocalStorage("colorIndex", this.colorIndex);
+                window.location.reload();
+            }
+        })
 
-    if (existingItemIndex > -1) {
-      // Si está, incrementar la cantidad
-      cartItems[existingItemIndex].quantity++;
-    } else {
-      // Si no, agregarlo con cantidad 1
-      this.product.quantity = 1;
-      cartItems.push(this.product);
+        updateCartBadge();
     }
-    setLocalStorage("so-cart", cartItems);
-    // animate the cart/backpack icon to give feedback to the user
-    // run a short animation after updating localStorage
-    animateCartIcon();
-    // update the numeric badge showing number of items
-    updateCartBadge();
-  }
+    updateCartListWithQuantity(){
+        const itemList = getLocalStorage("so-cart") || [];
+        const found = itemList.findIndex(item => item.Id === this.productId);
 
-  renderProductDetails() {
-    const productSection = document.querySelector(".product-detail");
-    if (!productSection) return;
+        if(found < 0){
+            this.product = {...this.product, quantity: 1};
+            itemList.push(this.product);
+            return itemList;
+        }
 
-    productSection.querySelector("h3").textContent = this.product.Brand.Name || "";
-    productSection.querySelector("h2").textContent = this.product.Name || "";
-    
-    const img = productSection.querySelector("img");
-    img.src = this.product.Image || "";
-    img.alt = this.product.Name || "Imagem do produto";
+        itemList[found].quantity += 1;
+        return itemList;
+    }
+    addToCart() {
+        // add the current product to the cart
+        const itemList = this.updateCartListWithQuantity();
+        
+        setLocalStorage("so-cart", itemList);
+         // run a short animation after updating localStorage
+        animateCartIcon();
+        // update the numeric badge showing number of items
+        updateCartBadge();
+       /*  showAlert("Product added successfully!") */
+        setTimeout(()=> {
+            window.location.href = `/product_listing/?category=${this.product.Category}`;
+        }, 1000); 
 
-    productSection.querySelector(".product-card__price").textContent = this.product.FinalPrice ? `$${this.product.FinalPrice}` : "";
-    productSection.querySelector(".product__color").textContent = this.product.Colors[0].ColorName || "";
-    productSection.querySelector(".product__description").innerHTML = this.product.DescriptionHtmlSimple || "";
-  }
+        
+   
+        
+    }
+
+    renderProductDetails(selector) {
+        const element = document.querySelector(selector);
+        let localIndex = getLocalStorage("colorIndex") || 0;
+        if (this.product.Colors[localIndex]) {
+            this.colorIndex = localIndex
+        }
+        element.insertAdjacentHTML(
+            "afterBegin",
+            productDetailsTemplate(this.product, this.colorIndex)
+        );
+    }
 }

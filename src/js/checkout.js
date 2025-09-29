@@ -1,8 +1,4 @@
-import {
-  loadHeaderFooter,
-  updateCartBadge
-} from "./utils.mjs";
-
+import { loadHeaderFooter, updateCartBadge } from "./utils.mjs";
 
 loadHeaderFooter();
 updateCartBadge();
