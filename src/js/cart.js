@@ -20,9 +20,9 @@ function deleteCartContent(event) {
     }
     return item.Id === itemId;
   });
-  
+
   if (itemIndex === -1) return;
-  
+
   cartItems[itemIndex].quantity -= 1;
 
   if (cartItems[itemIndex].quantity <= 0) {
@@ -99,7 +99,9 @@ function renderCartContents() {
 
 function cartItemTemplate(item) {
   const subtotal = (item.quantity * item.FinalPrice).toFixed(2);
-  const colorName = item.selectedColorName || (item.Colors && item.Colors[0] ? item.Colors[0].ColorName : "");
+  const colorName =
+    item.selectedColorName ||
+    (item.Colors && item.Colors[0] ? item.Colors[0].ColorName : "");
   const colorCode = item.selectedColorCode || "";
   const newItem = `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
