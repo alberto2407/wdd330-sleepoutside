@@ -119,7 +119,7 @@ function cartItemTemplate(item) {
     <button class="qty-btn increase" data-id="${item.Id}">+</button>
   </p>
   <p class="cart-card__price">$${item.FinalPrice}</p>
-  <span class="cart-card__delete" data-id="${item.Id}" data-color-code="${colorCode}">X</span>
+ <span class="cart-card__delete" data-id="${item.Id}" data-color-code="${colorCode}">X</span>
   <p class="cart-card__subtotal">Subtotal: $${subtotal}</p>
 </li>`;
 
