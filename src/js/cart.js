@@ -20,9 +20,9 @@ function deleteCartContent(event) {
     }
     return item.Id === itemId;
   });
-  
+
   if (itemIndex === -1) return;
-  
+
   cartItems[itemIndex].quantity -= 1;
 
   if (cartItems[itemIndex].quantity <= 0) {
@@ -61,8 +61,7 @@ function renderCartContents() {
       cartItems,
       (item) => item.FinalPrice * item.quantity,
     );
-    document.querySelector(".cart-total__amount").textContent =
-      `$${total.toFixed(2)}`;
+    document.querySelector(".cart-total__amount").textContent = total;
     cartFooter.classList.remove("hide");
 
     // botão de deletar
@@ -99,12 +98,14 @@ function renderCartContents() {
 
 function cartItemTemplate(item) {
   const subtotal = (item.quantity * item.FinalPrice).toFixed(2);
-  const colorName = item.selectedColorName || (item.Colors && item.Colors[0] ? item.Colors[0].ColorName : "");
+  const colorName =
+    item.selectedColorName ||
+    (item.Colors && item.Colors[0] ? item.Colors[0].ColorName : "");
   const colorCode = item.selectedColorCode || "";
   const newItem = `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
     <img
-      src="${item.Image}"
+      src="${item.Images.PrimaryMedium}"
       alt="${item.Name}"
     />
   </a>
@@ -118,7 +119,7 @@ function cartItemTemplate(item) {
     <button class="qty-btn increase" data-id="${item.Id}">+</button>
   </p>
   <p class="cart-card__price">$${item.FinalPrice}</p>
-  <span class="cart-card__delete" data-id="${item.Id}" data-color-code="${colorCode}">X</span>
+ <span class="cart-card__delete" data-id="${item.Id}" data-color-code="${colorCode}">X</span>
   <p class="cart-card__subtotal">Subtotal: $${subtotal}</p>
 </li>`;
 
