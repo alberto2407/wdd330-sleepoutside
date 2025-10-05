@@ -18,9 +18,24 @@ export default class ExternalServices {
     return data?.Result || data;
   }
   async findProductById(id) {
-    const response = await fetch(`${baseURL}/product/${id}`);
-    const data = await convertToJson(response);
-    return data.Result;
+  const categories = ["tents", "sleeping-bags", "backpacks"];
+  
+  // Search through each category file
+  for (const category of categories) {
+    try {
+      const response = await fetch(`../json/${category}.json`);
+      if (!response.ok) continue; // Skip if file doesn't exist
+      
+      const products = await response.json();
+      const product = products?.Result.find(item => item.Id === id);
+      
+      if (product) return product;
+    } catch (error) {
+      console.error(`Error searching in ${category}.json:`, error);
+    }
+  }
+  
+  throw new Error("Product not found: " + id);
   }
 
   async checkout(payload) {
