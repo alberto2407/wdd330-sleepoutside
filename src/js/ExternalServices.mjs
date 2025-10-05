@@ -1,4 +1,4 @@
-const baseURL = import.meta.env.VITE_SERVER_URL;
+const baseURL = import.meta.env.VITE_SERVER_URL || "http://localhost:5173";
 
 async function convertToJson(res) {
   const response = await res.json();
@@ -13,9 +13,9 @@ async function convertToJson(res) {
 export default class ExternalServices {
   constructor() {}
   async getData(category) {
-    const response = await fetch(`${baseURL}/products/search/${category}`);
+    const response = await fetch(`${baseURL}/json/${category}.json`);
     const data = await convertToJson(response);
-    return data.Result;
+    return data?.Result || data;
   }
   async findProductById(id) {
     const response = await fetch(`${baseURL}/product/${id}`);
