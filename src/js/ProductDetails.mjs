@@ -10,7 +10,13 @@ function productDetailsTemplate(product, colorIndex = 0) {
             src="${product?.Image || product?.Images?.PrimaryLarge}"
             alt="${product.NameWithoutBrand}"
         />
-        <p class="product-card__price">$${product.FinalPrice}</p>
+        <div class="product-price-section">
+            <p class="product-card__price">$${product.FinalPrice}</p>
+            <button id="addToWishlist" type="button" data-id="${product.Id}" class="btn-wishlist">
+                <span class="wishlist-icon">♡</span>
+                <span class="wishlist-text">Add to Wishlist</span>
+            </button>
+        </div>
         <p class="product__color">${product.Colors[colorIndex].ColorName}</p>
        <div class="product__color-list">
   ${product.Colors.map((color, index) => `
@@ -28,10 +34,6 @@ function productDetailsTemplate(product, colorIndex = 0) {
         </p>
         <div class="product-detail__add">
             <button id="addToCart" type="button" data-id="${product.Id}">Add to Cart</button>
-            <button id="addToWishlist" type="button" data-id="${product.Id}" class="btn-wishlist">
-                <span class="wishlist-icon">♡</span>
-                <span class="wishlist-text">Add to Wishlist</span>
-            </button>
         </div></section>`;
 }
 
