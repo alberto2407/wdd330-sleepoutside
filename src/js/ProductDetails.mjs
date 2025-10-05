@@ -1,4 +1,5 @@
 import { getLocalStorage ,setLocalStorage, } from "./utils.mjs";
+import WishList from "./WishList.mjs";
 //import showAlert from "./customAlert";
 
 function productDetailsTemplate(product, colorIndex = 0) {
@@ -9,7 +10,13 @@ function productDetailsTemplate(product, colorIndex = 0) {
             src="${product?.Image || product?.Images?.PrimaryLarge}"
             alt="${product.NameWithoutBrand}"
         />
-        <p class="product-card__price">$${product.FinalPrice}</p>
+        <div class="product-price-section">
+            <p class="product-card__price">$${product.FinalPrice}</p>
+            <button id="addToWishlist" type="button" data-id="${product.Id}" class="btn-wishlist">
+                <span class="wishlist-icon">♡</span>
+                <span class="wishlist-text">Add to Wishlist</span>
+            </button>
+        </div>
         <p class="product__color">${product.Colors[colorIndex].ColorName}</p>
        <div class="product__color-list">
   ${product.Colors.map((color, index) => `
@@ -37,6 +44,7 @@ export default class ProductDetails {
         this.product = {};
         this.dataSource = dataSource;
         this.colorIndex = 0;
+        this.wishlist = new WishList();
     }
     async init() {
         this.product = await this.dataSource.findProductById(this.productId);
@@ -44,6 +52,12 @@ export default class ProductDetails {
         document
             .getElementById("addToCart")
             .addEventListener("click", this.addToCart.bind(this));
+
+        document
+            .getElementById("addToWishlist")
+            .addEventListener("click", this.addToWishlist.bind(this));
+
+        this.updateWishlistButton();
 
         document.addEventListener("click", (event) => {
             if (event.target.classList.contains("color-option")) {
@@ -79,6 +93,31 @@ export default class ProductDetails {
           }
         }, 1000);
         
+    }
+
+    addToWishlist() {
+        const success = this.wishlist.addToWishlist(this.product);
+        if (success) {
+            this.updateWishlistButton();
+        }
+    }
+
+    updateWishlistButton() {
+        const wishlistBtn = document.getElementById("addToWishlist");
+        const wishlistIcon = wishlistBtn.querySelector(".wishlist-icon");
+        const wishlistText = wishlistBtn.querySelector(".wishlist-text");
+        
+        if (this.wishlist.isInWishlist(this.productId)) {
+            wishlistBtn.classList.add("in-wishlist");
+            wishlistIcon.textContent = "♥";
+            wishlistText.textContent = "In Wishlist";
+            wishlistBtn.disabled = true;
+        } else {
+            wishlistBtn.classList.remove("in-wishlist");
+            wishlistIcon.textContent = "♡";
+            wishlistText.textContent = "Add to Wishlist";
+            wishlistBtn.disabled = false;
+        }
     }
 
     renderProductDetails(selector) {
