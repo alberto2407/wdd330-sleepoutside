@@ -1,4 +1,4 @@
-const baseURL = import.meta.env.VITE_SERVER_URL;
+const baseURL = `${window.location.protocol}//${window.location.host}`;
 
 async function convertToJson(res) {
   const response = await res.json();
@@ -13,14 +13,29 @@ async function convertToJson(res) {
 export default class ExternalServices {
   constructor() {}
   async getData(category) {
-    const response = await fetch(`${baseURL}/products/search/${category}`);
+    const response = await fetch(`${baseURL}/json/${category}.json`);
     const data = await convertToJson(response);
-    return data.Result;
+    return data?.Result || data;
   }
   async findProductById(id) {
-    const response = await fetch(`${baseURL}/product/${id}`);
-    const data = await convertToJson(response);
-    return data.Result;
+  const categories = ["tents", "sleeping-bags", "backpacks"];
+  
+  // Search through each category file
+  for (const category of categories) {
+    try {
+      const response = await fetch(`../json/${category}.json`);
+      if (!response.ok) continue; // Skip if file doesn't exist
+      
+      const products = await response.json();
+      const product = products?.Result.find(item => item.Id === id);
+      
+      if (product) return product;
+    } catch (error) {
+      console.error(`Error searching in ${category}.json:`, error);
+    }
+  }
+  
+  throw new Error("Product not found: " + id);
   }
 
   async checkout(payload) {

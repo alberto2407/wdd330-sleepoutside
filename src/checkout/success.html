@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sleep Outside | Order Confirmation</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <header class="divider" id="main-header"></header>
+    <main class="divider">
+      <section class="order-confirmation">
+        <h2>Order Placed Successfully!</h2>
+        <p>Thank you for your order. Your order number is: <span id="order-id"></span></p>
+        
+        <div class="order-summary">
+          <h3>Order Summary</h3>
+          <div id="order-items"></div>
+          <div class="order-total">
+            <p>Order Total: <span id="order-total"></span></p>
+          </div>
+        </div>
+        
+        <div class="success-actions">
+          <a href="/" class="btn">Continue Shopping</a>
+        </div>
+      </section>
+    </main>
+    <footer id="main-footer"></footer>
+    <script type="module" src="../js/success.js"></script>
+  </body>
+</html>

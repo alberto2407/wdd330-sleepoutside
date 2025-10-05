@@ -6,25 +6,27 @@ function productDetailsTemplate(product, colorIndex = 0) {
         <h2 class="divider">${product.NameWithoutBrand}</h2>
         <img
             class="divider"
-            src="${product.Colors[colorIndex].ColorPreviewImageSrc}"
+            src="${product?.Image || product?.Images?.PrimaryLarge}"
             alt="${product.NameWithoutBrand}"
         />
         <p class="product-card__price">$${product.FinalPrice}</p>
         <p class="product__color">${product.Colors[colorIndex].ColorName}</p>
-        <div class="product__color-list">
-            ${product.Colors.map((color, index) => `
-                <img 
-                    class="color-option"
-                    data-index="${index}" 
-                    src="${color.ColorChipImageSrc}"
-                    alt="${color.ColorName}" />
-                `).join("")}
-        </div>
+       <div class="product__color-list">
+  ${product.Colors.map((color, index) => `
+    <img 
+      class="color-option" 
+      data-index="${index}" 
+      src="${color.ColorChipImageSrc}" 
+      alt="${color.ColorName}"
+      style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid transparent;"
+    /> 
+  `).join("")}
+</div>
         <p class="product__description">
         ${product.DescriptionHtmlSimple}
         </p>
         <div class="product-detail__add">
-            <button id="addToCart" data-id="${product.Id}">Add to Cart</button>
+            <button id="addToCart" type="button" data-id="${product.Id}">Add to Cart</button>
         </div></section>`;
 }
 
@@ -70,7 +72,11 @@ export default class ProductDetails {
         setLocalStorage("so-cart", itemList);
         /* showAlert("Product added successfully!") */
         setTimeout(()=> {
+          if (this?.product?.Category) {
             window.location.href = `/product_listing/?category=${this.product.Category}`;
+          } else {
+                        window.location.href = `/cart/index.html`;
+          }
         }, 1000);
         
     }
