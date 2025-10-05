@@ -4,9 +4,13 @@ import {
   priceTotal,
   updateCartBadge,
   loadHeaderFooter,
+  updateWishlistBadge,
 } from "./utils.mjs";
+import WishList from "./WishList.mjs";
 
 loadHeaderFooter();
+
+const wishlist = new WishList();
 
 function deleteCartContent(event) {
   const itemId = event.target.getAttribute("data-id");
@@ -51,6 +55,29 @@ function changeQuantity(productId, delta) {
   }
 }
 
+function moveToWishlist(productId) {
+  const cartItems = getLocalStorage("so-cart") || [];
+  const itemIndex = cartItems.findIndex(cartItem => cartItem.Id === productId);
+  
+  if (itemIndex === -1) return;
+  
+  const item = cartItems[itemIndex];
+  
+  // Add to wishlist
+  const success = wishlist.addToWishlist(item);
+  
+  if (success) {
+    // Remove from cart
+    cartItems.splice(itemIndex, 1);
+    setLocalStorage("so-cart", cartItems);
+    
+    // Re-render cart and update badges
+    renderCartContents();
+    updateCartBadge();
+    updateWishlistBadge();
+  }
+}
+
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart") || [];
   const cartFooter = document.querySelector(".cart-footer");
@@ -81,6 +108,14 @@ function renderCartContents() {
       button.addEventListener("click", (e) => {
         const id = e.target.dataset.id;
         changeQuantity(id, 1);
+      });
+    });
+
+    // botões de mover para wishlist
+    document.querySelectorAll(".move-to-wishlist-btn").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const id = e.target.dataset.id;
+        moveToWishlist(id);
       });
     });
 
@@ -119,7 +154,12 @@ function cartItemTemplate(item) {
     <button class="qty-btn increase" data-id="${item.Id}">+</button>
   </p>
   <p class="cart-card__price">$${item.FinalPrice}</p>
- <span class="cart-card__delete" data-id="${item.Id}" data-color-code="${colorCode}">X</span>
+  <div class="cart-card__actions">
+    <button class="move-to-wishlist-btn" data-id="${item.Id}" title="Move to Wishlist">
+      ♡ Wishlist
+    </button>
+    <span class="cart-card__delete" data-id="${item.Id}" data-color-code="${colorCode}" title="Remove from Cart">X</span>
+  </div>
   <p class="cart-card__subtotal">Subtotal: $${subtotal}</p>
 </li>`;
 
@@ -128,3 +168,4 @@ function cartItemTemplate(item) {
 
 renderCartContents();
 updateCartBadge();
+updateWishlistBadge();

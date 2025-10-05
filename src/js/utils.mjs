@@ -72,6 +72,7 @@ export async function loadHeaderFooter() {
 
  /*  cartCount(); */
  updateCartBadge();
+ updateWishlistBadge();
 }
 
 export function priceTotal(itemsList, getPrice) {
@@ -155,6 +156,44 @@ export function renderCartBadge() {
 export function updateCartBadge() {
   const count = getCartCount();
   const badge = renderCartBadge();
+  if (!badge) return;
+  if (count > 0) {
+    badge.textContent = String(count);
+    badge.classList.remove("hide");
+  } else {
+    badge.textContent = "";
+    badge.classList.add("hide");
+  }
+}
+
+// ---------- Wishlist badge helpers ----------
+export function getWishlistCount() {
+  const items = getLocalStorage("so-wishlist") || [];
+  return items.length;
+}
+
+function createWishlistBadgeElement() {
+  const badge = document.createElement("span");
+  badge.className = "wishlist-badge hide";
+  badge.setAttribute("aria-hidden", "true");
+  return badge;
+}
+
+export function renderWishlistBadge() {
+  const wishlistIcon = document.querySelector(".wishlist-icon");
+  if (!wishlistIcon) return null;
+  let badge = wishlistIcon.querySelector(".wishlist-badge");
+  if (!badge) {
+    badge = createWishlistBadgeElement();
+    // position badge inside wishlist container
+    wishlistIcon.appendChild(badge);
+  }
+  return badge;
+}
+
+export function updateWishlistBadge() {
+  const count = getWishlistCount();
+  const badge = renderWishlistBadge();
   if (!badge) return;
   if (count > 0) {
     badge.textContent = String(count);
