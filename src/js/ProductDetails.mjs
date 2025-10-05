@@ -72,7 +72,11 @@ export default class ProductDetails {
         setLocalStorage("so-cart", itemList);
         /* showAlert("Product added successfully!") */
         setTimeout(()=> {
+          if (this?.product?.Category) {
             window.location.href = `/product_listing/?category=${this.product.Category}`;
+          } else {
+                        window.location.href = `/cart/index.html`;
+          }
         }, 1000);
         
     }
