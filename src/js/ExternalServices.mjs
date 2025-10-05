@@ -1,4 +1,4 @@
-const baseURL = import.meta.env.VITE_SERVER_URL || "http://localhost:5173";
+const baseURL = `${window.location.protocol}//${window.location.host}`;
 
 async function convertToJson(res) {
   const response = await res.json();
