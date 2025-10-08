@@ -57,20 +57,22 @@ function changeQuantity(productId, delta) {
 
 function moveToWishlist(productId) {
   const cartItems = getLocalStorage("so-cart") || [];
-  const itemIndex = cartItems.findIndex(cartItem => cartItem.Id === productId);
-  
+  const itemIndex = cartItems.findIndex(
+    (cartItem) => cartItem.Id === productId,
+  );
+
   if (itemIndex === -1) return;
-  
+
   const item = cartItems[itemIndex];
-  
+
   // Add to wishlist
   const success = wishlist.addToWishlist(item);
-  
+
   if (success) {
     // Remove from cart
     cartItems.splice(itemIndex, 1);
     setLocalStorage("so-cart", cartItems);
-    
+
     // Re-render cart and update badges
     renderCartContents();
     updateCartBadge();
