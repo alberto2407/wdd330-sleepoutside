@@ -1,13 +1,14 @@
 import { getLocalStorage ,setLocalStorage, } from "./utils.mjs";
 import WishList from "./WishList.mjs";
-//import showAlert from "./customAlert";
+//import showAlert from "./customAlert";   
 
 function productDetailsTemplate(product, colorIndex = 0) {
     return `<section class="product-detail"> <h3>${product.Brand.Name}</h3>
         <h2 class="divider">${product.NameWithoutBrand}</h2>
         <img
             class="divider"
-            src="${product?.Image || product?.Images?.PrimaryLarge}"
+    <!-- src="${product?.Image || product?.Images?.PrimaryLarge}"-->
+            src="${product.Images.PrimaryLarge}"
             alt="${product.NameWithoutBrand}"
         />
         <div class="product-price-section">
@@ -81,6 +82,9 @@ export default class ProductDetails {
         return itemList;
     }
     addToCart() {
+        // to ensure that the product has an image, we add it here
+        this.product.Image = this.product.Images.PrimaryMedium;
+
         // add the current product to the cart
         const itemList = this.updateCartListWithQuantity();
         setLocalStorage("so-cart", itemList);
