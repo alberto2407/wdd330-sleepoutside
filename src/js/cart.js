@@ -124,8 +124,9 @@ function renderCartContents() {
     // botão de checkout
     document
       .querySelector("button.checkout")
-      .addEventListener("click", () =>
-        window.location.replace("/checkout/index.html"),
+      .addEventListener(
+        "click",
+        () => (window.location.href = "/checkout/index.html"),
       );
   } else {
     document.querySelector(".product-list").innerHTML = "";
@@ -142,7 +143,7 @@ function cartItemTemplate(item) {
   const newItem = `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
     <img
-      src="${item?.Images?.PrimaryMedium || item?.Image}"
+      src="${item.Images.PrimaryMedium || item.Image}"
       alt="${item.Name}"
     />
   </a>

@@ -1,23 +1,116 @@
 <!doctype html>
-
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Sleep Outside | Checkout</title>
-
-    <link rel="stylesheet" href="css/style.css" />
-    <script src="../js/main.js" type="module"></script>
+    <link rel="stylesheet" href="/css/style.css" />
     <script src="../js/checkout.js" type="module"></script>
   </head>
 
   <body>
     <header class="divider" id="main-header"></header>
-    <main class="divider">
-      <section class="products">
+    <main class="divider checkout">
+      <section class="checkout-form">
         <h2>Review & Place your Order</h2>
+        <form id="checkout-form" name="checkout">
+          <section class="checkout-form_data">
+            <input type="hidden" name="orderDate" id="orderDate" />
+            <fieldset>
+              <legend>Shipping</legend>
+              <div class="checkout__name">
+                <div class="form-div">
+                  <label for="fname">First Name</label>
+                  <input type="text" name="fname" id="fname" required />
+                </div>
+                <div class="form-div">
+                  <label for="lname">Last Name</label>
+                  <input type="text" name="lname" id="lname" required />
+                </div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Address</legend>
+              <div class="checkout__address">
+                <div class="form-div">
+                  <label for="address">Street Address</label>
+                  <input type="text" name="address" id="address" required />
+                </div>
+                <div class="form-div">
+                  <label for="city">City</label>
+                  <input type="text" name="city" id="city" required />
+                </div>
+                <div class="form-div">
+                  <label for="state">State</label>
+                  <input type="text" name="state" id="state" required />
+                </div>
+                <div class="form-div">
+                  <label for="zip">Zip Code</label>
+                  <input
+                    type="number"
+                    maxlength="5"
+                    minlength="5"
+                    name="zip"
+                    id="zip"
+                    pattern="^\d{5}$"
+                    title="Zip code must be 5 digits"
+                    placeholder="5 digits (ex: 12345)"
+                    required
+                  />
+                </div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Payment</legend>
+              <div class="form-div">
+                <label for="cardNumber">Credit Card Number</label>
+                <input
+                  type="text"
+                  name="cardNumber"
+                  id="cardNumber"
+                  placeholder="1111222233334444"
+                  pattern="\d{13,19}"
+                  title="13-19 Number digits"
+                  required
+                />
+              </div>
+              <div class="form-div">
+                <label for="expiration">Expiration Date (MM/YY)</label>
+                <input
+                  type="text"
+                  name="expiration"
+                  id="expiration"
+                  placeholder="08/25"
+                  pattern="^(0[1-9]|1[0-2])\/\d{2}$"
+                  title="Format valid: MM/YY (ex: 12/25)"
+                  required
+                />
+              </div>
+              <div class="form-div">
+                <label for="code">Security code</label>
+                <input
+                  type="text"
+                  name="code"
+                  id="code"
+                  pattern="^\d{3}$"
+                  title="Security code must be 3 digits"
+                  required
+                />
+              </div>
+            </fieldset>
+          </section>
+          <button type="submit" id="checkoutSubmit">Place Order</button>
+        </form>
+        <!-- Order Summary -->
+        <section class="order-summary">
+          <h2>Order Summary</h2>
+          <p>Subtotal: $<span id="subtotal">0.00</span></p>
+          <p>Shipping Estimate: $<span id="shipping">0.00</span></p>
+          <p>Tax: $<span id="tax">0.00</span></p>
+          <p>
+            <strong>Total: $<span id="total">0.00</span></strong>
+          </p>
+        </section>
       </section>
     </main>
     <footer id="main-footer"></footer>

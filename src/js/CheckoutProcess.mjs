@@ -12,6 +12,7 @@ export default class CheckoutProcess {
     this.list = [];
     this.itemTotal = 0;
     this.orderTotal = 0;
+    this.init();
   }
 
   // Initialize the checkout process by loading the cart and calculating the item total
@@ -125,6 +126,8 @@ export default class CheckoutProcess {
     try {
       await externalServices.checkout(orderData); // Submit the order
       //return response;
+      const response = await externalServices.checkout(orderData); // Submit the order
+      return response;
     } catch (err) {
       alertMessage("Error when processing the order: ", true);
     }
